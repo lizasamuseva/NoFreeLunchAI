@@ -12,7 +12,7 @@ export default function PaymentMethodPage() {
           How would you like to split?
         </h1>
         <p className="text-muted-foreground text-base mb-12">
-          Choose your preferred method below
+          Because nobody wants to do math after dessert
         </p>
 
         <div className="flex flex-col gap-4">
