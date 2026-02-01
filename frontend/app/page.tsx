@@ -29,7 +29,7 @@ export default function PaymentMethodPage() {
           </Link>
 
           <Link
-            href="/items"
+            href="/select"
             className="group w-full py-5 px-8 bg-emerald-500 rounded-2xl text-white font-medium text-lg
               hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 
               active:scale-[0.98] transition-all duration-200 flex items-center justify-between"
