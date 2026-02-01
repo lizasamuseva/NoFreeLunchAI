@@ -17,24 +17,12 @@ export default function PaymentMethodPage() {
 
         <div className="flex flex-col gap-4">
           <Link
-            href="/items"
-            className="group w-full py-5 px-8 bg-white border-2 border-emerald-200 rounded-2xl text-foreground font-medium text-lg
-              hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-100 
-              active:scale-[0.98] transition-all duration-200 flex items-center justify-between"
-          >
-            <span>Equally</span>
-            <span className="text-emerald-500 group-hover:translate-x-1 transition-transform duration-200">
-              <ChevronRight className="w-6 h-6" strokeWidth={2.5} />
-            </span>
-          </Link>
-
-          <Link
             href="/select"
             className="group w-full py-5 px-8 bg-emerald-500 rounded-2xl text-white font-medium text-lg
               hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 
               active:scale-[0.98] transition-all duration-200 flex items-center justify-between"
           >
-            <span>Custom</span>
+            <span>Let's split</span>
             <span className="group-hover:translate-x-1 transition-transform duration-200">
               <ChevronRight className="w-6 h-6" strokeWidth={2.5} />
             </span>
