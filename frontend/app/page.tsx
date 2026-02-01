@@ -6,7 +6,7 @@ export default function PaymentMethodPage() {
     <main className="min-h-svh bg-gradient-to-b from-emerald-50 to-white flex flex-col px-6 pt-24 pb-10">
       <div className="max-w-md mx-auto w-full">
         <p className="text-emerald-600 font-medium text-sm uppercase tracking-widest mb-3">
-          Bill Splitter
+          No Free Lunch AI
         </p>
         <h1 className="font-[family-name:var(--font-display)] text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance leading-tight">
           Ready to split the bill?
