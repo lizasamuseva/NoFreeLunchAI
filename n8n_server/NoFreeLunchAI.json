@@ -1,5 +1,5 @@
 {
-  "name": "NoLunchAIn8n",
+  "name": "NoFreeLunchAI",
   "nodes": [
     {
       "parameters": {
@@ -14,8 +14,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -5184,
-        4352
+        -5808,
+        4416
       ],
       "webhookId": "YOUR_WEBHOOK_ID",
       "credentials": {
@@ -43,7 +43,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -5168,
+        -5584,
         4080
       ],
       "alwaysOutputData": true,
@@ -92,7 +92,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -4944,
+        -5360,
         4080
       ]
     },
@@ -125,7 +125,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -2720,
+        -3120,
         4304
       ],
       "id": "f15626ac-9038-4a58-901f-7a72d19d9913",
@@ -144,7 +144,7 @@
       "typeVersion": 1.1,
       "position": [
         -6256,
-        4352
+        4416
       ],
       "webhookId": "YOUR_WEBHOOK_ID",
       "credentials": {
@@ -180,8 +180,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
-        -5904,
-        4336
+        -6032,
+        4384
       ]
     },
     {
@@ -195,7 +195,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -5392,
+        -5808,
         4160
       ],
       "webhookId": "YOUR_WEBHOOK_ID",
@@ -226,7 +226,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        -4064,
+        -4688,
         4304
       ],
       "id": "c9686fbc-ebee-45f6-9ff7-a4b341cc5029",
@@ -245,7 +245,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3840,
+        -4464,
         4304
       ],
       "id": "0fafbc1f-e592-4e8c-ac0c-22413215ee9d",
@@ -260,7 +260,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -3344,
+        -3792,
         4304
       ],
       "id": "07acc94c-b26f-4dc4-bf48-a0b67039b215",
@@ -287,7 +287,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -3168,
+        -3568,
         4304
       ],
       "id": "9f5ebbf8-689f-487e-b24c-f919ade25547",
@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2944,
+        -3344,
         4304
       ],
       "id": "41f9ba7c-0a17-4513-a938-ada4b053d480",
@@ -333,7 +333,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2496,
+        -2896,
         4208
       ],
       "id": "a62925f6-f96a-4b09-ab8b-3c436bf717e9",
@@ -361,8 +361,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -3664,
-        4144
+        -4240,
+        4224
       ],
       "id": "c9d5a8d3-ca23-4692-82e2-63e1ada7afbc",
       "name": "Add Receipt to Database",
@@ -392,7 +392,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2272,
+        -2672,
         4208
       ],
       "id": "fc745729-f069-4b7a-ad63-884f58f69deb",
@@ -423,7 +423,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2272,
+        -2672,
         4400
       ],
       "id": "e5d42cce-6693-418b-b038-f74af48cc581",
@@ -436,11 +436,15 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -2048,
+        -2448,
         4304
       ],
       "id": "b3db8f9c-e61e-431a-8238-8e6050158891",
@@ -475,7 +479,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -1824,
+        -2224,
         4304
       ],
       "id": "8460b337-fabf-4276-bcad-0a2a2d2cc58a",
@@ -501,7 +505,7 @@
       "typeVersion": 2.1,
       "position": [
         -6256,
-        5360
+        4976
       ],
       "id": "9762c09b-37da-4903-8f7d-5a9ec21524b8",
       "name": "Webhook",
@@ -543,7 +547,7 @@
       "typeVersion": 3.4,
       "position": [
         -6032,
-        5360
+        4976
       ],
       "id": "4efd0af8-22ba-4ad1-9533-6208714bb960",
       "name": "Edit Fields"
@@ -567,7 +571,7 @@
       "typeVersion": 1,
       "position": [
         -5808,
-        5216
+        4912
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -605,8 +609,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -5600,
-        5200
+        -5584,
+        4912
       ]
     },
     {
@@ -628,8 +632,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -5344,
-        5168
+        -5360,
+        4832
       ],
       "id": "6296a809-5438-4a97-b799-e3bbb3de8a44",
       "name": "Add new User1",
@@ -650,7 +654,7 @@
       "typeVersion": 1,
       "position": [
         -5136,
-        5360
+        4976
       ],
       "id": "04f54d24-d3c6-4b16-8346-33746cf32d3c",
       "name": "Split Out",
@@ -664,7 +668,7 @@
       "typeVersion": 2,
       "position": [
         -4688,
-        5360
+        4976
       ],
       "id": "d97e3010-acd3-49fb-a548-01b4f994c15a",
       "name": "Code in JavaScript"
@@ -693,7 +697,7 @@
       "typeVersion": 1,
       "position": [
         -4912,
-        5360
+        4976
       ],
       "id": "ca1b1650-e556-4b3e-985d-560e406c1ed4",
       "name": "Create a row",
@@ -716,8 +720,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -4048,
-        5360
+        -4016,
+        4976
       ],
       "id": "1d1961cc-fc1f-46f2-a6d0-66061b4d1586",
       "name": "Send a text message1",
@@ -748,7 +752,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -4720,
+        -5136,
         3984
       ],
       "id": "0182144c-ca93-4523-8cac-5a323c06514f",
@@ -771,7 +775,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -4496,
+        -4912,
         4032
       ],
       "id": "c20e40a2-de56-45b5-bae7-5e80d4617574",
@@ -792,7 +796,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -4288,
+        -4912,
         4304
       ],
       "id": "20ccf5f5-54b3-4f77-aff6-f0634ea35e4b",
@@ -826,7 +830,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -4720,
+        -5136,
         4176
       ],
       "id": "aa90be51-e9a3-461b-8bf7-de1937ee75c0",
@@ -843,8 +847,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -5120,
-        4560
+        -5360,
+        4608
       ],
       "id": "0d39a23e-a52c-4688-961e-c696a9ade387",
       "name": "Ask for IBAN",
@@ -863,8 +867,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5696,
-        4432
+        -5808,
+        4608
       ],
       "id": "8008fe10-a75b-45d1-8eaa-9c29bbb80b72",
       "name": "Code in JavaScript1"
@@ -894,8 +898,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -5424,
-        4496
+        -5584,
+        4608
       ],
       "id": "87130a6a-b2b3-4320-a974-b9abacaa3d2b",
       "name": "Update a row",
@@ -907,18 +911,16 @@
       }
     },
     {
-      "parameters": {
-        "mode": "chooseBranch",
-        "useDataOfInput": 2
-      },
+      "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -3504,
-        4288
+        -4016,
+        4304
       ],
       "id": "d22ec290-b3c4-4e3f-8a21-ea1240e28c7f",
-      "name": "Merge2"
+      "name": "Merge2",
+      "executeOnce": true
     },
     {
       "parameters": {
@@ -936,8 +938,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -4480,
-        5360
+        -4464,
+        4976
       ],
       "id": "8589f8a9-c5c7-4cb1-88d0-412d63c721a9",
       "name": "Get a row",
@@ -964,8 +966,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -4272,
-        5360
+        -4240,
+        4976
       ],
       "id": "37ea41ae-70fc-44ef-8e4e-8f48a46f44e4",
       "name": "Get a row1",
@@ -1394,7 +1396,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "25aa4097-c9e9-493c-93ca-5de4ed77aae4",
+  "versionId": "b3ce50dd-cb1e-43b8-a42e-5883fc478e2b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "YOUR_INSTANCE_ID"
