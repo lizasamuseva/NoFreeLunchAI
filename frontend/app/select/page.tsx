@@ -218,8 +218,8 @@ export default function SelectPage() {
                   <button
                     onClick={() => toggleItemSelection(item.id)}
                     className={`
-                      flex items-center py-4 px-5 rounded-2xl font-medium
-                      transition-all duration-300 ease-out flex-1 min-w-0 overflow-hidden
+                      flex items-center justify-between py-4 px-5 rounded-2xl font-medium
+                      transition-all duration-300 ease-out flex-1 min-w-0
                       active:scale-[0.98]
                       ${
                         isSelected
@@ -228,13 +228,10 @@ export default function SelectPage() {
                       }
                     `}
                   >
-                    <span className="w-24 shrink-0 truncate text-left">
+                    <span className="truncate text-left">
                       {item.name}
                     </span>
-                    <span className="flex-1 mx-1 overflow-hidden text-right tracking-[0.2em] whitespace-nowrap opacity-30">
-                      {"...................."}
-                    </span>
-                    <span className="shrink-0 whitespace-nowrap w-10 text-right font-semibold">
+                    <span className="shrink-0 whitespace-nowrap ml-4 font-semibold">
                       {item.price}$
                     </span>
                   </button>
