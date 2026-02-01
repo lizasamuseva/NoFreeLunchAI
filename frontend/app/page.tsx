@@ -9,7 +9,7 @@ export default function PaymentMethodPage() {
           Bill Splitter
         </p>
         <h1 className="font-[family-name:var(--font-display)] text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance leading-tight">
-          How would you like to split?
+          Ready to split the bill?
         </h1>
         <p className="text-muted-foreground text-base mb-12">
           Because nobody wants to do math after dessert
