@@ -1,0 +1,1404 @@
+{
+  "name": "NoLunchAIn8n",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "⛔️ Sorry, but I can only read images (Photos or Compressed Files).\n\nPlease send a **Photo** of the receipt.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "d5db46c4-4c12-41a2-8305-eb322c7443fc",
+      "name": "Reject PDF2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -5184,
+        4352
+      ],
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "User",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telegram_id",
+              "keyValue": "={{ $('Receive receipt').item.json.message.from.id }}"
+            }
+          ]
+        }
+      },
+      "id": "d0914690-00de-49b8-a01b-5c3404d3e07f",
+      "name": "Check if User Exists",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5168,
+        4080
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Check if User Exists').item.json }}",
+              "operator": {
+                "type": "object",
+                "operation": "empty"
+              }
+            },
+            {
+              "id": "ce5d60db-dd90-4e9a-8b70-7f29d2544e01",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c9102682-3026-4186-a668-f869a7ab19f9",
+      "name": "User Not Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -4944,
+        4080
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "aa85ccfe-7860-4c8e-bf3c-bff25e9abc3f",
+              "leftValue": "={{ $json.isNew }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2720,
+        4304
+      ],
+      "id": "f15626ac-9038-4a58-901f-7a72d19d9913",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "d872d5a1-4f70-45d5-9180-5c30247d2600",
+      "name": "Receive receipt",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -6256,
+        4352
+      ],
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.message.photo ? 'photo' : ($json.message.text.includes('/iban') ? 'iban' : ($json.message.document ? $json.message.document.mime_type : 'unknown')) }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "contains",
+              "value2": "image"
+            },
+            {
+              "value2": "photo"
+            },
+            {
+              "value2": "iban",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 1
+      },
+      "id": "1110c140-8389-4e69-aa07-ceb7ac893b51",
+      "name": "Check the incoming file type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -5904,
+        4336
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.document ? $json.message.document.file_id : $json.message.photo[$json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "id": "97ab940a-d037-477d-b9de-e5c62e91e82d",
+      "name": "Download receipt image",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -5392,
+        4160
+      ],
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Extract receipt items. Output Format: JSON array of objects with keys \"name\" and \"price\". Rule: If quantity > 1, append \" xN\" to name. Example: [{\"name\": \"Apple x3\", \"price\": 1.50}] No markdown, no preamble.",
+        "inputType": "base64",
+        "binaryPropertyName": "=data",
+        "options": {
+          "maxTokens": 1000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -4064,
+        4304
+      ],
+      "id": "c9686fbc-ebee-45f6-9ff7-a4b341cc5029",
+      "name": "Receipt to JSON",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the output text from your specific OpenAI structure\nconst rawText = $input.first().json['0'].content[0].text;\n\ntry {\n  // 1. Clean the text - remove markdown code blocks if present\n  let cleanJsonString = rawText.trim();\n  \n  // Remove ```json and ``` markers if present\n  cleanJsonString = cleanJsonString.replace(/^```json\\s*/i, '').replace(/\\s*```$/, '');\n  \n  // Remove any other markdown code block markers\n  cleanJsonString = cleanJsonString.replace(/^```\\s*/, '').replace(/\\s*```$/, '');\n  \n  // Trim again after removing markers\n  cleanJsonString = cleanJsonString.trim();\n  \n  // 2. Parse the JSON\n  const itemsArray = JSON.parse(cleanJsonString);\n\n  // 3. Validate it's an array\n  if (!Array.isArray(itemsArray)) {\n    throw new Error('Expected an array of items');\n  }\n\n  // 4. Map the items to fix the price format\n  const formattedItems = itemsArray.map(item => {\n    return {\n      name: item.name,\n      price: parseFloat(String(item.price).replace(',', '.'))\n    };\n  });\n\n  // 5. Return a single object (wrapped in an array for n8n)\n  return [{\n    json: {\n      owner_id: $('Receive receipt').first().json.message.chat.id,\n      items: formattedItems,\n    }\n  }];\n\n} catch (error) {\n  // Log the raw text for debugging\n  console.error('Raw text from OpenAI:', rawText);\n  throw new Error('Failed to parse receipt data: ' + error.message);\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3840,
+        4304
+      ],
+      "id": "0fafbc1f-e592-4e8c-ac0c-22413215ee9d",
+      "name": "Parse JSON Receipt"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=items",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -3344,
+        4304
+      ],
+      "id": "07acc94c-b26f-4dc4-bf48-a0b67039b215",
+      "name": "Split Receipt into items",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "Item",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "name",
+              "keyValue": "={{ $json.items.name }}"
+            },
+            {
+              "keyName": "price",
+              "keyValue": "={{ $json.items.price }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -3168,
+        4304
+      ],
+      "id": "9f5ebbf8-689f-487e-b24c-f919ade25547",
+      "name": "Get items from the database",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the data safely\nconst dbItems = $('Get items from the database').all() || []; \nconst newItems = $('Split Receipt into items').all(); \n\nreturn newItems.map(item => {\n  // Access the actual receipt data (adjusting for your 'items' nesting)\n  const newItemData = item.json.items || item.json; \n  \n  // 2. Look for a match ONLY if dbItems has actual data\n  const match = dbItems.length > 0 ? dbItems.find(db => \n    db.json.name === newItemData.name && \n    db.json.price === newItemData.price\n  ) : null;\n\n  if (match) {\n    return {\n      json: {\n        ...newItemData,\n        id: match.json.id,\n        isNew: false\n      }\n    };\n  } else {\n    return {\n      json: {\n        ...newItemData,\n        isNew: true\n      }\n    };\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2944,
+        4304
+      ],
+      "id": "41f9ba7c-0a17-4513-a938-ada4b053d480",
+      "name": "Check if items already in database",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "tableId": "Item",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.name }}"
+            },
+            {
+              "fieldId": "price",
+              "fieldValue": "={{ $json.price }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2496,
+        4208
+      ],
+      "id": "a62925f6-f96a-4b09-ab8b-3c436bf717e9",
+      "name": "Add Item to database",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "Receipt",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "owner_id",
+              "fieldValue": "={{ $('Receive receipt').item.json.message.from.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -3664,
+        4144
+      ],
+      "id": "c9d5a8d3-ca23-4692-82e2-63e1ada7afbc",
+      "name": "Add Receipt to Database",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "Receipt_Item",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "item_id",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "receipt_id",
+              "fieldValue": "={{ $('Add Receipt to Database').first().json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2272,
+        4208
+      ],
+      "id": "fc745729-f069-4b7a-ad63-884f58f69deb",
+      "name": "Add Receipt_Item pairs to database 1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "Receipt_Item",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "item_id",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "receipt_id",
+              "fieldValue": "={{ $('Add Receipt to Database').first().json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2272,
+        4400
+      ],
+      "id": "e5d42cce-6693-418b-b038-f74af48cc581",
+      "name": "Add Receipt_Item pairs to database 2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -2048,
+        4304
+      ],
+      "id": "b3db8f9c-e61e-431a-8238-8e6050158891",
+      "name": "Merge",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Receive receipt').first().json.message.chat.id }}",
+        "text": "✅Receipt processed!\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🚀 Forward to Friends",
+                    "additionalFields": {
+                      "url": "={{ \"https://t.me/share/url?url=\" + encodeURIComponent(\"https://t.me/NoFreeLunchAIBot/noFreeLunchAI?startapp=\" + $json.receipt_id) + \"&text=\" + encodeURIComponent(\"\\n\\nHey! Here is the receipt. Tap to split! 👇\") }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1824,
+        4304
+      ],
+      "id": "8460b337-fabf-4276-bcad-0a2a2d2cc58a",
+      "name": "Send a text message",
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "notesInFlow": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_PATH",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -6256,
+        5360
+      ],
+      "id": "9762c09b-37da-4903-8f7d-5a9ec21524b8",
+      "name": "Webhook",
+      "webhookId": "YOUR_WEBHOOK_PATH"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2d5e10c2-d977-4e80-a351-c985df707011",
+              "name": "receipt_id",
+              "value": "={{ $json.body.receipt_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c6cc2ddd-1056-4eb4-a32e-e7830a26f51d",
+              "name": "telegram_id",
+              "value": "={{ $json.body.telegram_user_id }}",
+              "type": "number"
+            },
+            {
+              "id": "f36a98c4-b2a8-48b7-90d4-1007047d90c6",
+              "name": "telegram_user_name",
+              "value": "={{ $json.body.telegram_user_name }}",
+              "type": "string"
+            },
+            {
+              "id": "796d8057-a262-460e-821a-1d737b705630",
+              "name": "chosen_items",
+              "value": "={{ $json.body.items }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -6032,
+        5360
+      ],
+      "id": "4efd0af8-22ba-4ad1-9533-6208714bb960",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "User",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telegram_id",
+              "keyValue": "={{ $json.telegram_id }}"
+            }
+          ]
+        }
+      },
+      "id": "c26643d0-ebad-4db4-adb7-6bc8b4aa92d4",
+      "name": "Check if User Exists1",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5808,
+        5216
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Check if User Exists1').item.json }}",
+              "operator": {
+                "type": "object",
+                "operation": "empty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8edfe97e-a1af-457c-a081-d71f5110ff34",
+      "name": "User Not Found?1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -5600,
+        5200
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "User",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('Edit Fields').item.json.telegram_user_name }}"
+            },
+            {
+              "fieldId": "telegram_id",
+              "fieldValue": "={{ $('Edit Fields').item.json.telegram_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5344,
+        5168
+      ],
+      "id": "6296a809-5438-4a97-b799-e3bbb3de8a44",
+      "name": "Add new User1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "chosen_items",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -5136,
+        5360
+      ],
+      "id": "04f54d24-d3c6-4b16-8346-33746cf32d3c",
+      "name": "Split Out",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "let totalSum = 0;\n\n// Get ALL items specifically from the 'Split Out' node\n// We use 'map' to extract the json part from each item\nconst splitItems = $('Split Out').all().map(item => item.json);\n\n// Loop through the data we just grabbed\nfor (const data of splitItems) {\n\n  // Access fields directly from the item data\n  // Since 'Split Out' flattens the structure, 'price' and 'percentage' \n  // might be at the top level or inside 'chosen_items' depending on your settings.\n  // Based on your screenshot, they are inside 'chosen_items'.\n  \n  // Check if chosen_items exists, otherwise try top-level (fallback)\n  const itemData = data.chosen_items || data; \n\n  const price = parseFloat(itemData.price) || 0;\n  const percentage = parseFloat(itemData.percentage) || 0;\n\n  const itemCost = price * (percentage / 100);\n\n  totalSum += itemCost;\n}\n\nreturn [\n  {\n    json: {\n      total_sum: Number(totalSum.toFixed(2))\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4688,
+        5360
+      ],
+      "id": "d97e3010-acd3-49fb-a548-01b4f994c15a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "tableId": "User_Item",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{ $json.telegram_id }}"
+            },
+            {
+              "fieldId": "item_id",
+              "fieldValue": "={{ $json.chosen_items.id }}"
+            },
+            {
+              "fieldId": "percentage",
+              "fieldValue": "={{ $json.chosen_items.percentage/100 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4912,
+        5360
+      ],
+      "id": "ca1b1650-e556-4b3e-985d-560e406c1ed4",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').first().json.body.telegram_user_id }}",
+        "text": "=Total order value is {{ $('Code in JavaScript').item.json.total_sum }}\n\nYou can send it here:\n{{ $json.iban }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4048,
+        5360
+      ],
+      "id": "1d1961cc-fc1f-46f2-a6d0-66061b4d1586",
+      "name": "Send a text message1",
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "User",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('Receive receipt').first().json.message.from.username }}"
+            },
+            {
+              "fieldId": "telegram_id",
+              "fieldValue": "={{ $('Receive receipt').first().json.message.from.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4720,
+        3984
+      ],
+      "id": "0182144c-ca93-4523-8cac-5a323c06514f",
+      "name": "Add new User",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Receive receipt').item.json.message.chat.id }}",
+        "text": "Please, entrer your IBAN number first!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4496,
+        4032
+      ],
+      "id": "c20e40a2-de56-45b5-bae7-5e80d4617574",
+      "name": "Send a text message2",
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -4288,
+        4304
+      ],
+      "id": "20ccf5f5-54b3-4f77-aff6-f0634ea35e4b",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2db34ecb-de14-48c7-a6b4-b36fb754f40b",
+              "leftValue": "={{ $json.iban }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4720,
+        4176
+      ],
+      "id": "aa90be51-e9a3-461b-8bf7-de1937ee75c0",
+      "name": "Check for entered IBAN"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Receive receipt').item.json.message.chat.id }}",
+        "text": "IBAN is successfully set up! \nYou can send your receipt now!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -5120,
+        4560
+      ],
+      "id": "0d39a23e-a52c-4688-961e-c696a9ade387",
+      "name": "Ask for IBAN",
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = $input.first().json.message.text;\nlet arr = text.split(\" \");\nreturn [{ json: { command: arr[0], value: arr[1] || '' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5696,
+        4432
+      ],
+      "id": "8008fe10-a75b-45d1-8eaa-9c29bbb80b72",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "User",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telegram_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Receive receipt').item.json.message.from.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "iban",
+              "fieldValue": "={{ $json.value }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5424,
+        4496
+      ],
+      "id": "87130a6a-b2b3-4320-a974-b9abacaa3d2b",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3504,
+        4288
+      ],
+      "id": "d22ec290-b3c4-4e3f-8a21-ea1240e28c7f",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "Receipt",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Edit Fields').first().json.receipt_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4480,
+        5360
+      ],
+      "id": "8589f8a9-c5c7-4cb1-88d0-412d63c721a9",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "User",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telegram_id",
+              "keyValue": "={{ $json.owner_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4272,
+        5360
+      ],
+      "id": "37ea41ae-70fc-44ef-8e4e-8f48a46f44e4",
+      "name": "Get a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check if User Exists": {
+      "main": [
+        [
+          {
+            "node": "User Not Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Not Found?": {
+      "main": [
+        [
+          {
+            "node": "Add new User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check for entered IBAN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Add Item to database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Receipt_Item pairs to database 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive receipt": {
+      "main": [
+        [
+          {
+            "node": "Check the incoming file type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the incoming file type": {
+      "main": [
+        [
+          {
+            "node": "Download receipt image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject PDF2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download receipt image": {
+      "main": [
+        [
+          {
+            "node": "Check if User Exists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Receipt to JSON": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON Receipt": {
+      "main": [
+        [
+          {
+            "node": "Add Receipt to Database",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Receipt into items": {
+      "main": [
+        [
+          {
+            "node": "Get items from the database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get items from the database": {
+      "main": [
+        [
+          {
+            "node": "Check if items already in database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if items already in database": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Item to database": {
+      "main": [
+        [
+          {
+            "node": "Add Receipt_Item pairs to database 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Receipt to Database": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Receipt_Item pairs to database 2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Add Receipt_Item pairs to database 1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if User Exists1": {
+      "main": [
+        [
+          {
+            "node": "User Not Found?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Not Found?1": {
+      "main": [
+        [
+          {
+            "node": "Add new User1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add new User1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Check if User Exists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add new User": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Receipt to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for entered IBAN": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "Ask for IBAN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Split Receipt into items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Get a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "25aa4097-c9e9-493c-93ca-5de4ed77aae4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  },
+  "id": "vbCp8E2XPDauIuNIfERDu",
+  "tags": []
+}
