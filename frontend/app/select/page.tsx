@@ -100,7 +100,7 @@ export default function SelectPage() {
   };
 
   const WEBHOOK_URL =
-    "https://lizavetasamuseva.app.n8n.cloud/webhook-test/8ae4519f-4b20-4560-93a6-68c94a475aac";
+    "https://lizavetasamuseva.app.n8n.cloud/webhook/8ae4519f-4b20-4560-93a6-68c94a475aac";
 
   const handleSubmit = async () => {
     if (!receiptId || selectedItems.length === 0) return;
