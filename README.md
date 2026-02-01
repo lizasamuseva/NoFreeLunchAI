@@ -2,6 +2,9 @@
 
 Split bills with friends, hassle-free. Send a receipt photo to the Telegram bot, get a shareable link, then choose your items and percentages in the web app—no math after dessert.
 
+# About
+The project was created specificly for the Cursor AI Hackathon, organised in Hamburg, Germany 31.01.2026-01.02.2026
+
 ## What it does
 
 - **Telegram bot**: Users send a photo of a receipt. The bot uses AI to extract line items, stores them in a database, and replies with a link to split the bill.
